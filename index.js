@@ -1,9 +1,9 @@
 const env = process.env.NODE_ENV || 'development';
 
+const mongoose = require('mongoose');
 const config = require('./config/config')[env];
 const express = require('express');
 const app = express();
-const mongoose = require('mongoose');
 
 mongoose.connect(config.databaseUrl, {
     useNewUrlParser: true,

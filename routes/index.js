@@ -1,14 +1,15 @@
 
 const { getAllCubes } = require('../controllers/cubes')
 const { getCube } = require('../controllers/database')
+const Cube = require('../models/cube')
 
 module.exports = (app) => {
     
-    app.get('/', (req, res) => {
-        
+    app.get('/', async (req, res) => {
+        const cubes = await getAllCubes()
         res.render('index', {
             title: 'Cubes',
-            cubes: getAllCubes()
+            cubes
         })
         
     })
@@ -22,6 +23,25 @@ module.exports = (app) => {
     app.get('/create', (req, res) => {
         res.render('create', {
             title: 'Create | Cube'
+        })
+    })
+
+    app.post('/create', (req, res) => {
+        const {
+            name,
+            description,
+            imageUrl,
+            difficultyLevel
+        } = req.body
+
+        const cube = new Cube({name, description, imageUrl, difficulty: difficultyLevel})
+
+        cube.save((err) => {
+            if(err) {
+                console.error(err)
+            } else {
+                res.redirect('/')
+            }
         })
     })
 

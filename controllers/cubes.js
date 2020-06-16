@@ -1,10 +1,9 @@
-const fs = require('fs')
-const { getCubes } = require('./database')
+const Cube = require('../models/cube')
 
-const getAllCubes = (cb) => {
-   getCubes((cubes) => {
-       cb(cubes)
-   })
+const getAllCubes = async () => {
+   const cubes = await Cube.find()
+
+   return cubes;
 }  
 
 module.exports = {

@@ -1,6 +1,5 @@
 
-const { getAllCubes } = require('../controllers/cubes')
-const { getCube } = require('../controllers/database')
+const { getAllCubes, getCube } = require('../controllers/cubes')
 const Cube = require('../models/cube')
 
 module.exports = (app) => {
@@ -45,14 +44,13 @@ module.exports = (app) => {
         })
     })
 
-    app.get('/details/:id', (req, res) => {
+    app.get('/details/:id', async (req, res) => {
         
-        getCube(req.params.id, (cube) => {
+        const cube = await getCube(req.params.id)
 
-            res.render('details', {
-                title: 'Details | Cube details',
-                cube
-            })
+        res.render('details', {
+            title: 'Details | Cube details',
+            cube
         })
     })
 

@@ -6,6 +6,13 @@ const getAllCubes = async () => {
    return cubes;
 }  
 
+const getCube = async (id) =>  {
+    const cube = await Cube.findById(id).lean()
+
+    return cube;
+}
+
 module.exports = {
-    getAllCubes
+    getAllCubes,
+    getCube
 }

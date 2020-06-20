@@ -9,20 +9,12 @@
 
 <h2>Accessories</h2>
 <div class="accessories">
-    <div class="accessory">
-        <img src="https://images-na.ssl-images-amazon.com/images/I/61J8UP8pySL._SX425_.jpg" alt="stickerName">
-        <h3>Accessory Name</h3>
-        <p>Accessory Description</p>
-    </div>
-    <div class="accessory">
-        <img src="https://images-na.ssl-images-amazon.com/images/I/61J8UP8pySL._SX425_.jpg" alt="stickerName">
-        <h3>Accessory Name</h3>
-        <p>Accessory Description</p>
-    </div>
-    <div class="accessory">
-        <img src="https://images-na.ssl-images-amazon.com/images/I/61J8UP8pySL._SX425_.jpg" alt="stickerName">
-        <h3>Accessory Name</h3>
-        <p>Accessory Description</p>
-    </div>
+    {{#each accessories}}
+        <div class="accessory">
+            <img src="{{this.imageUrl}}" alt="stickerName">
+            <h3>{{this.name}}</h3>
+            <p>{{this.description}}</p>
+        </div>
+    {{/each}}
     <h3 class="italic">This cube has no accessories yet...</h3>
 </div>

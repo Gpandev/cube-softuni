@@ -1,9 +1,9 @@
 const Accessory = require('../models/accessory')
 
 const getAccessories = async () => {
-    const accessorise = await Accessory.find().lean()
+    const accessories = await Accessory.find().lean()
 
-    return accessorise
+    return accessories
 }
 
 module.exports = {

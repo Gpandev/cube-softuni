@@ -1,5 +1,5 @@
 
-const { getAllCubes, getCube, updateCube } = require('../controllers/cubes')
+const { getAllCubes, getCube, updateCube, getCubeWithAccessories } = require('../controllers/cubes')
 const { getAccessories } = require('../controllers/accessories')
 const Cube = require('../models/cube')
 const Accessory = require('../models/accessory')
@@ -48,10 +48,11 @@ module.exports = (app) => {
 
     app.get('/details/:id', async (req, res) => {
         
-        const cube = await getCube(req.params.id)
-
+        const cube = await getCubeWithAccessories(req.params.id)
+        
         res.render('details', {
             title: 'Details | Cube details',
+            ...cube,
             cube
         })
     })
@@ -81,11 +82,20 @@ module.exports = (app) => {
         const cube = await getCube(req.params.id)
         const accessories = await getAccessories()
 
+        const cubeAccessories = cube.accessories.map(acc => acc._id.valueOf().toString())
+
+        const notAttachedAccessories = accessories.filter(acc => {
+          const accString = acc._id.valueOf().toString()
+          return !cubeAccessories.includes(accString)  
+        })  
+
+        const canAttachAccessory =cube.accessories.length !== accessories.length &&  accessories.length > 0
+
         res.render('attachAccessory', {
             title: 'Attach accessory',
             cube, 
-            accessories,
-            isFullyAttached: cube.accessories.length === accessories.length
+            accessories: notAttachedAccessories,
+            canAttachAccessory
         }) 
     })
 
@@ -93,7 +103,7 @@ module.exports = (app) => {
         const {
             accessory
         } = req.body
-        console.log(accessory)
+        
         await updateCube(req.params.id, accessory)
 
         res.redirect(`/details/${req.params.id}`)

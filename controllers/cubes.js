@@ -13,13 +13,21 @@ const getCube = async (id) =>  {
 }
 
 const updateCube = async (cubeId, accessoryId) => {
-
-    await Cube.findByIdAndUpdate(cubeId, {
+    try {
+      await Cube.findByIdAndUpdate(cubeId, {
         $addToSet: {
-            accessories: [accessoryId]
-        }
-    })
-}
+          accessories: [accessoryId],
+        },
+      });
+      await Accessory.findByIdAndUpdate(accessoryId, {
+        $addToSet: {
+          cubes: [cubeId],
+        },
+      })
+    } catch (err) {
+      return err
+    }
+  }
 
 const getCubeWithAccessories = async (id) => {
     const cube = await Cube.findById(id).populate('accessories').lean()

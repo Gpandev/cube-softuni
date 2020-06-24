@@ -3,6 +3,12 @@ const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const privateKey = 'CUBE-WORKSHOP'
 
+const generateToken = data => {
+    const token = jwt.sign(data, privateKey)
+
+    return token
+}
+
 const saveUser = async (req, res) => {
     const { 
         username,
@@ -19,16 +25,39 @@ const saveUser = async (req, res) => {
 
     const userObj = await user.save()
 
-    const token = jwt.sign({
+    const token = generateToken(jwt.sign({
         userID: userObj._id, 
         username: userObj.username
-    }, privateKey)
+    }, privateKey))
 
     res.cookie('aid', token)
 
     return true
 }
 
+const verifyUser = async (req, res) => {
+    const { 
+        username,
+        password
+    } = req.body
+
+    const user = await User.findOne({ username })
+
+    const status = await bcrypt.compare(password, user.password)
+
+    if(status) {
+        const token = generateToken(jwt.sign({
+            userID: user._id, 
+            username: user.username
+        }, privateKey))
+
+        res.cookie('aid', token)
+    }
+    
+    return status
+}
+
 module.exports = {
-    saveUser
+    saveUser,
+    verifyUser
 }

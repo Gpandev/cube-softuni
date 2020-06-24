@@ -18,6 +18,10 @@ mongoose.connect(config.databaseUrl, {
 })
 
 require('./config/express')(app);
+require('./routes/auth')(app);
+require('./routes/cube')(app);
+require('./routes/accessory')(app);
 require('./routes')(app);
+
 
 app.listen(config.port, console.log(`Listening on port ${config.port}! Now its up to you...`));

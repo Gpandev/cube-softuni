@@ -1,8 +1,19 @@
-const express = require('express')
+const env = process.env.NODE_ENV || 'development'
+
+const config = require('../config/config')[env]
 const { getCubeWithAccessories } = require('../controllers/cubes')
 const Cube = require('../models/cube')
+const jwt = require('jsonwebtoken')
 
 module.exports = (app) => {
+
+    app.get('/edit', (req, res) => {
+        res.render('editCubePage')
+    })
+
+    app.get('/delete', (req, res) => {
+        res.render('deleteCubePage')
+    })
 
     app.get('/create', (req, res) => {
         res.render('create', {
@@ -18,7 +29,10 @@ module.exports = (app) => {
             difficultyLevel
         } = req.body
 
-        const cube = new Cube({name, description, imageUrl, difficulty: difficultyLevel})
+        const token = req.cookies['aid']
+        const decodedObj = jwt.verify(token, config.privateKey)
+
+        const cube = new Cube({name, description, imageUrl, difficulty: difficultyLevel, creatorId: decodedObj.userID})
 
         cube.save((err) => {
             if(err) {
@@ -28,14 +42,6 @@ module.exports = (app) => {
                 res.redirect('/')
             }
         })
-    })
-
-    app.get('/edit', (req, res) => {
-        res.render('editCubePage')
-    })
-
-    app.get('/delete', (req, res) => {
-        res.render('deleteCubePage')
     })
 
     app.get('/details/:id', async (req, res) => {

@@ -1,8 +1,5 @@
 const { getAllCubes } = require('../controllers/cubes')
 
-const Cube = require('../models/cube')
-const Accessory = require('../models/accessory')
-
 module.exports = (app) => {
     
     app.get('/', async (req, res) => {

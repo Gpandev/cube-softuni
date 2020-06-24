@@ -1,7 +1,9 @@
+const env = process.env.NODE_ENV || 'development'
+
+const config = require('../config/config')[env]
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
-const privateKey = 'CUBE-WORKSHOP'
 
 const generateToken = data => {
     const token = jwt.sign(data, privateKey)
@@ -28,7 +30,7 @@ const saveUser = async (req, res) => {
     const token = generateToken(jwt.sign({
         userID: userObj._id, 
         username: userObj.username
-    }, privateKey))
+    }, config.privateKey))
 
     res.cookie('aid', token)
 

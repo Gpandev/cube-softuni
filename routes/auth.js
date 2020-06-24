@@ -1,6 +1,6 @@
 const express = require('express')
 const { saveUser, verifyUser } = require('../controllers/user')
-const {  } = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
 module.exports = (app) => {
 

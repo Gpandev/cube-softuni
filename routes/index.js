@@ -19,6 +19,12 @@ module.exports = (app) => {
         })
     })
 
+    app.get('/logout', (req, res) => {
+        res.clearCookie('aid')
+
+        res.redirect('/')
+    })
+
     app.get('/*', (req, res) => {
         res.render('404', {
             title: '404 not found'

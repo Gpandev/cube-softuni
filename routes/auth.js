@@ -1,15 +1,20 @@
 const express = require('express')
-const { saveUser, verifyUser } = require('../controllers/user')
+const { saveUser, verifyUser, guestAccess, getUserStatus } = require('../controllers/user')
 const jwt = require('jsonwebtoken')
+
 
 module.exports = (app) => {
 
-    app.get('/login', (req, res) => {
-        res.render('loginPage')
+    app.get('/login', guestAccess,getUserStatus, (req, res) => {
+        res.render('loginPage', {
+            isLoggedIn: req.isLoggedIn
+        })
     })
 
-    app.get('/signup', (req, res) => {
-        res.render('registerPage')
+    app.get('/signup', guestAccess, getUserStatus, (req, res) => {
+        res.render('registerPage', {
+            isLoggedIn: req.isLoggedIn
+        })
     })
 
     app.post('/singup', async (req, res) => {

@@ -1,18 +1,21 @@
 const { getAllCubes } = require('../controllers/cubes')
+const { getUserStatus } = require('../controllers/user')
 
 module.exports = (app) => {
     
-    app.get('/', async (req, res) => {
+    app.get('/', getUserStatus,  async (req, res) => {
         const cubes = await getAllCubes()
         res.render('index', {
             title: 'Cubes',
-            cubes
+            cubes,
+            isLoggedIn: req.isLoggedIn
         })
     })
 
-    app.get('/about', (req, res) => {
+    app.get('/about', getUserStatus, (req, res) => {
         res.render('about', {
-            title: 'About | Cubes'
+            title: 'About | Cubes',
+            isLoggedIn: req.isLoggedIn
         })
     })
 

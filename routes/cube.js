@@ -4,24 +4,31 @@ const config = require('../config/config')[env]
 const { getCubeWithAccessories } = require('../controllers/cubes')
 const Cube = require('../models/cube')
 const jwt = require('jsonwebtoken')
+const { authAccess, getUserStatus, authAccessJSON } = require('../controllers/user')
 
 module.exports = (app) => {
 
-    app.get('/edit', (req, res) => {
-        res.render('editCubePage')
-    })
-
-    app.get('/delete', (req, res) => {
-        res.render('deleteCubePage')
-    })
-
-    app.get('/create', (req, res) => {
-        res.render('create', {
-            title: 'Create | Cube'
+    app.get('/edit', authAccess, getUserStatus, (req, res) => {
+        res.render('editCubePage', {
+            isLoggedIn: req.isLoggedIn
         })
     })
 
-    app.post('/create', (req, res) => {
+    app.get('/delete', authAccess, getUserStatus,  (req, res) => {
+        res.render('deleteCubePage', {
+            
+            isLoggedIn: req.isLoggedIn
+        })
+    })
+
+    app.get('/create', authAccess, getUserStatus, (req, res) => {
+        res.render('create', {
+            title: 'Create | Cube',
+            isLoggedIn: req.isLoggedIn
+        })
+    })
+
+    app.post('/create', authAccessJSON, (req, res) => {
         const {
             name,
             description,
@@ -44,14 +51,15 @@ module.exports = (app) => {
         })
     })
 
-    app.get('/details/:id', async (req, res) => {
+    app.get('/details/:id',getUserStatus, async (req, res) => {
         
         const cube = await getCubeWithAccessories(req.params.id)
         
         res.render('details', {
             title: 'Details | Cube details',
             ...cube,
-            cube
+            cube,
+            isLoggedIn: req.isLoggedIn
         })
     })
 }

@@ -2,16 +2,18 @@ const express = require('express')
 const { getAccessories } = require('../controllers/accessories')
 const {  getCube, updateCube } = require('../controllers/cubes')
 const Accessory = require('../models/accessory')
+const { authAccess, getUserStatus, authAccessJSON } = require('../controllers/user')
 
 module.exports = (app) => {
 
-    app.get('/create/accessory', (req, res) => {
+    app.get('/create/accessory', authAccess, getUserStatus, (req, res) => {
         res.render('createAccessory', {
-            title: 'Create accessory'
+            title: 'Create accessory',
+            isLoggedIn: req.isLoggedIn
         }) 
     })
 
-    app.post('/create/accessory', async (req, res) => {
+    app.post('/create/accessory', authAccessJSON, async (req, res) => {
         const {
             name,
             description,
@@ -25,7 +27,7 @@ module.exports = (app) => {
         res.redirect('/create/accessory')
     })
 
-    app.get('/attach/accessory/:id', async (req, res) => {
+    app.get('/attach/accessory/:id', authAccess, getUserStatus, async (req, res) => {
 
         const cube = await getCube(req.params.id)
         const accessories = await getAccessories()
@@ -43,11 +45,12 @@ module.exports = (app) => {
             title: 'Attach accessory',
             cube, 
             accessories: notAttachedAccessories,
-            canAttachAccessory
+            canAttachAccessory,
+            isLoggedIn: req.isLoggedIn
         }) 
     })
 
-    app.post('/attach/accessory/:id', async (req, res) => {
+    app.post('/attach/accessory/:id',authAccessJSON, async (req, res) => {
         const {
             accessory
         } = req.body
